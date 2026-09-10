@@ -1383,6 +1383,48 @@
     .socials a:hover { color: var(--ink); }
     .socials a:hover::before { transform: translate(3px, -3px); }
 
+    /* 微信号：点击即可复制 */
+    .socials .wechat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.34rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.66);
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: color 0.3s, border-color 0.3s, background 0.3s;
+    }
+
+    .socials .wechat-chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex: none;
+    }
+
+    .socials .wechat-chip b {
+      color: var(--ink);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .socials .wechat-chip:hover {
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+
+    .socials .wechat-chip.copied {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+      color: #925a00;
+    }
+
     /* ---------- 页脚（商务风格） ---------- */
     .footer {
       background: #f1ede3;
@@ -2003,7 +2045,7 @@
         <p class="contact-index mono">06 · Contact</p>
         <h2 class="contact-title">用 AI 与数据<br />创造价值<em>。</em></h2>
         <p class="contact-en">Let&rsquo;s create value with AI and data.</p>
-        <a class="email-link" href="mailto:hello@example.com">hello@example.com</a>
+        <a class="email-link" href="mailto:3504588476@qq.com">3504588476@qq.com</a>
         <div class="contact-sub">
           <p class="copy-zh">如果有 AI 研究、数据分析或金融大数据相关的实习与项目机会，欢迎写一封简单的邮件给我。</p>
           <p class="copy-en">Open to internships and projects in AI, data analytics or financial big data — feel free to drop me a short email.</p>
@@ -2012,7 +2054,15 @@
           <a href="#" target="_blank">GitHub</a>
           <a href="#" target="_blank">CSDN 博客</a>
           <a href="#" target="_blank">知乎</a>
-          <a href="#" target="_blank">微信公众号</a>
+          <button
+            class="wechat-chip"
+            type="button"
+            id="wechatChip"
+            data-wechat="13592603808"
+            aria-label="点击复制微信号 13592603808"
+          >
+            微信 WeChat · <b>13592603808</b>
+          </button>
         </div>
       </div>
     </section>
@@ -2051,7 +2101,8 @@
 
         <div class="footer-col">
           <h4>联系方式 <small>Contact</small></h4>
-          <div class="contact-line"><span>邮箱</span><b>hello@example.com</b></div>
+          <div class="contact-line"><span>邮箱</span><b>3504588476@qq.com</b></div>
+          <div class="contact-line"><span>微信</span><b>13592603808</b></div>
           <div class="contact-line"><span>坐标</span><b>河南 · 新乡</b></div>
           <div class="contact-line"><span>年级</span><b>大二 · Sophomore</b></div>
           <div class="contact-line"><span>学院</span><b>计算机科学与技术学院</b></div>
@@ -2427,6 +2478,34 @@
     }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+    // ======== 点击复制微信号 ========
+    const wechatChip = document.getElementById("wechatChip");
+    if (wechatChip) {
+      const wechatId = wechatChip.dataset.wechat || "";
+      const defaultLabel = wechatChip.innerHTML;
+      wechatChip.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(wechatId);
+        } catch (err) {
+          const temp = document.createElement("textarea");
+          temp.value = wechatId;
+          temp.setAttribute("readonly", "");
+          temp.style.position = "fixed";
+          temp.style.opacity = "0";
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+        wechatChip.classList.add("copied");
+        wechatChip.innerHTML = "已复制 · Copied <b>" + wechatId + "</b>";
+        window.setTimeout(() => {
+          wechatChip.classList.remove("copied");
+          wechatChip.innerHTML = defaultLabel;
+        }, 1800);
+      });
+    }
 
     // ======== 页脚年份 ========
     document.getElementById("year").textContent = new Date().getFullYear();
